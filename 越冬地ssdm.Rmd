@@ -1,0 +1,159 @@
+---
+title: "循环10次"
+output: html_document
+date: "2023-07-31"
+---
+
+
+#10个循环
+```{r}
+###反嘴鹬SSDM聚合模型########
+library(raster)
+library(SSDM)
+library(readr)
+```
+
+#2020 年冬季
+```{r}
+
+
+Lake2020 <-   raster("E:/PA_SDM/8_mask/2020/dis_42.tif")
+names(Lake2020) <- "Lake"
+Dam2020 <-    raster("E:/PA_SDM/8_mask/2020/dis_43.tif")
+names(Dam2020) <- "Dam"
+Tide2020 <-   raster("E:/PA_SDM/8_mask/2020/dis_45.tif")
+names(Tide2020) <- "Tide"
+Mud2020 <-   raster("E:/PA_SDM/8_mask/2020/dis_46.tif")
+names(Mud2020) <- "Mud"
+Wet2020 <-   raster("E:/PA_SDM/8_mask/2020/dis_64.tif")
+names(Wet2020) <- "Wet"
+
+Tem2020 <-  raster("E:/PA_SDM/8_mask/tem/1246_2020W.tif")
+names(Tem2020) <- "Tem"
+
+#环境变量整合
+Env <- stack(Lake2020,Dam2020,Tide2020,Mud2020,Wet2020,Tem2020) 
+
+
+Lake2000 <-   raster("E:/PA_SDM/8_mask/2000/dis_42.tif")
+names(Lake2000) <- "Lake"
+Dam2000 <-    raster("E:/PA_SDM/8_mask/2000/dis_43.tif")
+names(Dam2000) <- "Dam"
+Tide2000 <-   raster("E:/PA_SDM/8_mask/2000/dis_45.tif")
+names(Tide2000) <- "Tide"
+Mud2000 <-   raster("E:/PA_SDM/8_mask/2000/dis_46.tif")
+names(Mud2000) <- "Mud"
+Wet2000 <-   raster("E:/PA_SDM/8_mask/2000/dis_64.tif")
+names(Wet2000) <- "Wet"
+Tem2000 <-  raster("E:/PA_SDM/8_mask/tem/1246_2000W.tif")
+names(Tem2000) <- "Tem" 
+
+
+#反推2005
+Lake2005 <-   raster("E:/PA_SDM/8_mask/2005/dis_42.tif")
+names(Lake2005) <- "Lake"
+Dam2005 <-    raster("E:/PA_SDM/8_mask/2005/dis_43.tif")
+names(Dam2005) <- "Dam"
+Tide2005 <-   raster("E:/PA_SDM/8_mask/2005/dis_45.tif")
+names(Tide2005) <- "Tide"
+Mud2005 <-   raster("E:/PA_SDM/8_mask/2005/dis_46.tif")
+names(Mud2005) <- "Mud"
+Wet2005 <-   raster("E:/PA_SDM/8_mask/2005/dis_64.tif")
+names(Wet2005) <- "Wet"
+Tem2005 <-  raster("E:/PA_SDM/8_mask/tem/1246_2005W.tif")
+names(Tem2005) <- "Tem" 
+
+
+
+#反推2010
+Lake2010 <-   raster("E:/PA_SDM/8_mask/2010/dis_42.tif")
+names(Lake2010) <- "Lake"
+Dam2010 <-    raster("E:/PA_SDM/8_mask/2010/dis_43.tif")
+names(Dam2010) <- "Dam"
+Tide2010 <-   raster("E:/PA_SDM/8_mask/2010/dis_45.tif")
+names(Tide2010) <- "Tide"
+Mud2010 <-   raster("E:/PA_SDM/8_mask/2010/dis_46.tif")
+names(Mud2010) <- "Mud"
+Wet2010 <-   raster("E:/PA_SDM/8_mask/2010/dis_64.tif")
+names(Wet2010) <- "Wet"
+Tem2010 <-  raster("E:/PA_SDM/8_mask/tem/1246_2010W.tif")
+names(Tem2010) <- "Tem" 
+
+
+#反推2015
+Lake2015 <-   raster("E:/PA_SDM/8_mask/2015/dis_42.tif")
+names(Lake2015) <- "Lake"
+Dam2015 <-    raster("E:/PA_SDM/8_mask/2015/dis_43.tif")
+names(Dam2015) <- "Dam"
+Tide2015 <-   raster("E:/PA_SDM/8_mask/2015/dis_45.tif")
+names(Tide2015) <- "Tide"
+Mud2015 <-   raster("E:/PA_SDM/8_mask/2015/dis_46.tif")
+names(Mud2015) <- "Mud"
+Wet2015 <-   raster("E:/PA_SDM/8_mask/2015/dis_64.tif")
+names(Wet2015) <- "Wet"
+Tem2015 <-  raster("E:/PA_SDM/8_mask/tem/1246_2015W.tif")
+names(Tem2015) <- "Tem" 
+
+Env2000 <- stack(Tem2000,Lake2000,Tide2000,Dam2000,Mud2000,Wet2000) 
+Env2005 <- stack(Tem2005,Lake2005,Tide2005,Dam2005,Mud2005,Wet2005) 
+Env2015 <- stack(Tem2015,Lake2015,Tide2015,Dam2015,Mud2015,Wet2015) 
+Env2010 <- stack(Tem2010,Lake2010,Tide2010,Dam2010,Mud2010,Wet2010) 
+
+#数据点的准备  
+spdata1 <- read_csv("E:/PA_SDM/0_point/450.csv",show_col_types = FALSE)
+
+
+
+
+
+
+PA <-ensemble_modelling(c("RF","CTA","MARS","ANN","SVM"),spdata1, Env = Env, Xcol = "E",Ycol = "N", PA = NULL, thresh = 1001, axes.metric = 'Pearson',
+                        rep = 10, 
+                        ensemble.metric = c('AUC'),  ##这里选择用AUC评估模拟情况
+                        ensemble.thresh = c(0.70),  ##这里是选择AUC值为多少以下的模型不纳入最后的结果
+                        weight = TRUE, uncertainty = TRUE, verbose = TRUE, GUI = FALSE)
+
+
+
+
+  writeRaster(PA@projection, paste0("E:/PA_SDM/10_result/2020HSI.tif"), format="GTiff")
+  writeRaster(PA@binary, paste0("E:/PA_SDM/10_result/2020BI.tif"), format="GTiff")
+  # Export the threshold, AUC, and Kappa
+  write.csv(PA@evaluation$threshold, paste0("E:/PA_SDM/10_result/threshold.csv"))
+  write.csv(PA@evaluation$AUC, paste0("E:/PA_SDM/10_result/AUC.csv"))
+  write.csv(PA@evaluation$Kappa, paste0("E:/PA_SDM/10_result/Kappa.csv"))
+# Export model evaluation
+  write.csv(knitr::kable(PA@evaluation), paste0("E:/PA_SDM/10_result/evaluation.csv"))
+  
+  # Export variable importance
+  write.csv(knitr::kable(PA@variable.importance), paste0("E:/PA_SDM/10_result/variable_importance.csv"))
+
+ESDM2000 <-SSDM::project(PA, Env2000)
+ESDM2005 <-SSDM::project(PA, Env2005)
+ESDM2010 <-SSDM::project(PA, Env2010)
+ESDM2015 <-SSDM::project(PA, Env2015)
+ 
+#导出
+writeRaster(ESDM2000@projection,"E:/PA_SDM/10_result/2000HSI.tif",format="GTiff")
+writeRaster(ESDM2000@binary,"E:/PA_SDM/10_result/2000BI.tif",format="GTiff")
+
+
+writeRaster(ESDM2005@projection,"E:/PA_SDM/10_result/2005HSI.tif",format="GTiff")
+writeRaster(ESDM2005@binary,"E:/PA_SDM/10_result/2005BI.tif",format="GTiff")
+
+
+writeRaster(ESDM2010@projection,"E:/PA_SDM/10_result/2010HSI.tif",format="GTiff")
+writeRaster(ESDM2010@binary,"E:/PA_SDM/10_result/2010BI.tif",format="GTiff")
+
+
+writeRaster(ESDM2015@projection,"E:/PA_SDM/10_result/2015HSI.tif",format="GTiff")
+writeRaster(ESDM2015@binary,"E:/PA_SDM/10_result/2015BI.tif",format="GTiff")
+  
+
+  
+  # Remove temporary files
+  removeTmpFiles(h=0)
+
+```
+
+
