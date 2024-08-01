@@ -1,0 +1,318 @@
+---
+title: "反嘴鹬繁殖"
+output: html_document
+date: "2023-08-01"
+---
+```{r}
+
+
+# 加载必要的包
+
+library(readr)
+library(raster)
+library(SSDM)
+# 读取CSV文件
+spdata2 <- read_csv("E:/PA_SDM/0_point/breed/brcx.csv")
+
+
+##breeding
+Tem2020 <-  raster("E:/PA_SDM/breed/3_ready/2020/res_2020B.tif")
+names(Tem2020) <- "Tem04"
+Dam2020 <-   raster("E:/PA_SDM/breed/3_ready/2020/dis_43.tif")
+names(Dam2020) <- "Dam"
+Tide2020 <-   raster("E:/PA_SDM/breed/3_ready/2020/dis_45.tif")
+names(Tide2020) <- "Tide"
+Wet2020 <-   raster("E:/PA_SDM/breed/3_ready/2020/dis_64.tif")
+names(Wet2020) <- "Wet"
+river2020 <-   raster("E:/PA_SDM/breed/3_ready/2020/dis_41.tif")
+names(river2020) <- "River"
+
+
+Env <- stack(Tem2020,Dam2020,Tide2020,Wet2020) 
+
+Dam2000 <-    raster("E:/PA_SDM/breed/3_ready/2000/dis_43.tif")
+names(Dam2000) <- "Dam"
+Tide2000 <-   raster("E:/PA_SDM/breed/3_ready/2000/dis_45.tif")
+names(Tide2000) <- "Tide"
+Wet2000 <-   raster("E:/PA_SDM/breed/3_ready/2000/dis_64.tif")
+names(Wet2000) <- "Wet"
+Tem2000 <-  raster("E:/PA_SDM/breed/3_ready/2000/res_2000B.tif")
+names(Tem2000) <- "Tem04" 
+river2000 <-   raster("E:/PA_SDM/breed/3_ready/2000/dis_41.tif")
+names(river2000) <- "River"
+
+#反推2005
+
+Dam2005 <-    raster("E:/PA_SDM/breed/3_ready/2005/dis_43.tif")
+names(Dam2005) <- "Dam"
+Tide2005 <-   raster("E:/PA_SDM/breed/3_ready/2005/dis_45.tif")
+names(Tide2005) <- "Tide"
+Wet2005 <-   raster("E:/PA_SDM/breed/3_ready/2005/dis_64.tif")
+names(Wet2005) <- "Wet"
+Tem2005 <-  raster("E:/PA_SDM/breed/3_ready/2005/res_2005B.tif")
+names(Tem2005) <- "Tem04" 
+river2005 <-   raster("E:/PA_SDM/breed/3_ready/2005/dis_41.tif")
+names(river2005) <- "River"
+
+
+#反推2010
+
+Dam2010 <-    raster("E:/PA_SDM/breed/3_ready/2010/dis_43.tif")
+names(Dam2010) <- "Dam"
+Tide2010 <-   raster("E:/PA_SDM/breed/3_ready/2010/dis_45.tif")
+names(Tide2010) <- "Tide"
+
+Wet2010 <-   raster("E:/PA_SDM/breed/3_ready/2010/dis_64.tif")
+names(Wet2010) <- "Wet"
+Tem2010 <-  raster("E:/PA_SDM/breed/3_ready/2010/res_2010B.tif")
+names(Tem2010) <- "Tem04" 
+river2010 <-   raster("E:/PA_SDM/breed/3_ready/2010/dis_41.tif")
+names(river2010) <- "River"
+
+#反推2015
+
+Dam2015 <-    raster("E:/PA_SDM/breed/3_ready/2015/dis_43.tif")
+names(Dam2015) <- "Dam"
+Tide2015 <-   raster("E:/PA_SDM/breed/3_ready/2015/dis_45.tif")
+names(Tide2015) <- "Tide"
+Wet2015 <-   raster("E:/PA_SDM/breed/3_ready/2015/dis_64.tif")
+names(Wet2015) <- "Wet"
+Tem2015 <-  raster("E:/PA_SDM/breed/3_ready/2015/res_2015B.tif")
+names(Tem2015) <- "Tem04" 
+river2015 <-   raster("E:/PA_SDM/breed/3_ready/2015/dis_41.tif")
+names(river2015) <- "River"
+
+
+
+Env2020 <- stack(Dam2020,Tide2020,river2020) 
+Env2000 <- stack(Tide2000,Dam2000,river2000) 
+Env2005 <- stack(Tide2005,Dam2005,river2005) 
+Env2010 <- stack(Tide2010,Dam2010,river2010) 
+Env2015 <- stack(Tide2015,Dam2015,river2015) 
+
+
+
+spdata2 <- read_csv("E:/PA_SDM/0_point/breed/607.csv")
+PAB <-ensemble_modelling(c("RF","CTA","MARS","ANN","SVM"),spdata2, Env = Env2020, Xcol = "E",Ycol = "N", PA = NULL, thresh = 1001, axes.metric = 'Pearson',
+                    rep = 10, 
+                        ensemble.metric = c('AUC'),  ##这里选择用AUC评估模拟情况
+                        ensemble.thresh = c(0.70),  ##这里是选择AUC值为多少以下的模型不纳入最后的结果
+                        weight = TRUE, uncertainty = TRUE, verbose = TRUE, GUI = FALSE)
+
+print(PAB@evaluation$AUC)
+ 
+  writeRaster(PAB@projection, paste0("E:/PA_SDM/breed/result/2020HSI.tif"), format="GTiff")
+  writeRaster(PAB@binary, paste0("E:/PA_SDM/breed/result/2020BI.tif"), format="GTiff")
+  # Export the threshold, AUC, and Kappa
+  write.csv(PAB@evaluation$threshold, "E:/PA_SDM/breed/result/threshold08.csv")
+  write.csv(PAB@evaluation$AUC, paste0("E:/PA_SDM/breed/result/AUC.csv"))
+  write.csv(PAB@evaluation$Kappa, paste0("E:/PA_SDM/breed/result/Kappa.csv"))
+# Export model evaluation
+  write.csv(knitr::kable(PAB@evaluation), paste0("E:/PA_SDM/breed/result/evaluation.csv"))
+  
+  # Export variable importance
+  write.csv(knitr::kable(PAB@variable.importance), paste0("E:/PA_SDM/breed/result/variable_importance.csv"))
+
+  ESDM2000 <-SSDM::project(PAB, Env2000)
+    writeRaster(ESDM2000@projection, paste0("E:/PA_SDM/breed/result/2000HSI.tif"), format="GTiff")
+  writeRaster(ESDM2000@binary, paste0("E:/PA_SDM/breed/result/2000BI.tif"), format="GTiff")
+
+  ESDM2005 <-SSDM::project(PAB, Env2005)
+  writeRaster(ESDM2005@projection, paste0("E:/PA_SDM/breed/result/2005HSI.tif"), format="GTiff")
+  writeRaster(ESDM2005@binary, paste0("E:/PA_SDM/breed/result/2005BI.tif"), format="GTiff")
+ 
+   ESDM2010 <-SSDM::project(PAB, Env2010)
+ writeRaster(ESDM2010@projection, paste0("E:/PA_SDM/breed/result/2010HSI.tif"), format="GTiff")
+  writeRaster(ESDM2010@binary, paste0("E:/PA_SDM/breed/result/2010BI.tif"), format="GTiff")
+   
+  ESDM2015 <-SSDM::project(PAB, Env2015)
+  writeRaster(ESDM2015@projection, paste0("E:/PA_SDM/breed/result/2015HSI.tif"), format="GTiff")
+  writeRaster(ESDM2015@binary, paste0("E:/PA_SDM/breed/result/2015BI.tif"), format="GTiff")
+  
+
+```
+
+
+
+#计算适宜生境变化
+```{r}
+library(raster)
+
+# 初始化一个向量用于存储每个年份的面积结果
+areas <- numeric()
+
+# 循环遍历你的年份
+for (year in c(2000, 2005, 2010, 2015, 2020)) {
+  # 初始化用于存储每年10个文件面积的列表
+  yearly_areas <- numeric()
+ 
+  file_path <- paste0("E:/PA_SDM/breed/result/", year, "BI",".tif")
+    
+  # 将每个文件读取为raster对象
+  r <- raster(file_path)
+  # 使用cellStats计算raster对象的单元格值为1的数量，即面积
+  area <- cellStats(r, sum, na.rm = TRUE)
+  # 加入每年面积的列表
+  yearly_areas <- c(yearly_areas, area)
+  
+  # 将每年的面积添加到总面积向量中
+  areas <- c(areas, yearly_areas)
+}
+
+print(areas)
+
+```
+
+
+
+
+
+#堆叠20年内所有适宜生境
+```{r}
+library(raster)
+
+# 指定文件夹路径
+dir_path <- "E:/PA_SDM/breed/result/BI/"
+
+# 使用list.files找到所有的tif文件
+file_list <- list.files(path = dir_path, pattern = "*.tif", full.names = TRUE)
+
+# 读取所有的tif文件并创建一个RasterStack对象
+raster_list <- lapply(file_list, raster)
+raster_stack <- stack(raster_list)
+
+# 计算RasterStack对象的和
+sum_raster <- calc(raster_stack, fun = sum)
+
+# 保存结果
+writeRaster(sum_raster, filename = paste0(dir_path, "Sum.tif"), format = "GTiff", overwrite = TRUE)
+
+```
+
+##删除0值
+```{r}
+library(raster)
+
+remove_zero_values <- function(input_file, output_file) {
+  # 读取TIFF图像
+  img <- raster(input_file)
+  
+  # 将零值设置为NA（缺失值）
+  img[img == 0] <- NA
+  
+  # 保存处理后的图像
+  writeRaster(img, output_file, format = "GTiff", overwrite = TRUE)
+}
+
+# 示例用法
+input_image_file <- "E:/PA_SDM/breed/result/BI/Sum.tif"   # 替换为您的TIFF图像路径
+output_image_file <- "E:/PA_SDM/breed/result/BI/mask_sum.tif" # 替换为输出图像保存的路径
+remove_zero_values(input_image_file, output_image_file)
+
+```
+
+
+#掩膜和裁切
+```{r}
+#掩膜裁
+#裁切之前记得重采样确保分辨率一致
+# Load required libraries
+library(raster)
+
+
+# Define reference raster and extent
+ref_raster <- raster("E:/PA_SDM/breed/mask_sum.tif")
+ref_extent <- extent(ref_raster)
+
+# Get a list of all .tif files in the directory
+files <- list.files(path = "E:/PA_SDM/breed/Merge_LUCC/", pattern = "\\.tif$", full.names = TRUE)
+
+# Loop through raster files
+for (file in files) {
+  # Read the current raster
+  current_raster <- raster(file)
+  
+  # Crop the raster to the extent of the reference raster
+  cropped_raster <- crop(current_raster, ref_extent)
+  
+  # Mask the raster
+  masked_raster <- mask(cropped_raster, ref_raster)
+  
+  # Write the cropped and masked raster to a new tif file
+  writeRaster(masked_raster, filename = paste0("E:/PA_SDM/breed/Merge_LUCC/mask_", basename(file)), format = "GTiff")
+}
+
+
+
+```
+
+#每年图层面积占比
+```{r}
+library(raster)
+
+# 指定文件夹路径
+dir_path <- "E:/PA_SDM/breed/Merge_LUCC/mask/"
+
+
+
+# 使用list.files找到所有的tif文件
+file_list <- list.files(path = dir_path, pattern = "*.tif", full.names = TRUE)
+
+# 读取第一个tif文件并计算每个值的数量
+r <- raster(file_list[1])
+freq_table <- freq(r)
+
+# 创建一个数据框来存储结果，使用第一个文件的名字作为列名
+df <- data.frame(Value = freq_table[, 1], Count = freq_table[, 2])
+names(df)[2] <- basename(file_list[1])
+
+# 循环处理剩下的tif文件
+for (file_path in file_list[-1]) {  # 注意，我们使用-1来排除第一个文件
+  # 读取tif文件为raster对象
+  r <- raster(file_path)
+  
+  # 计算每个值的数量
+  freq_table <- freq(r)
+  
+  # 将频率表添加到数据框中，使用文件名作为列名
+  file_name <- basename(file_path)
+  df <- merge(df, data.frame(Value = freq_table[, 1], Count = freq_table[, 2], row.names = NULL), by = "Value", all = TRUE)
+  names(df)[ncol(df)] <- file_name
+}
+
+# 保存结果为csv文件
+write.csv(df, file = paste0(dir_path, "FrequencyCounts.csv"), row.names = FALSE)
+
+```
+
+#求温度平均值
+```{r}
+
+library(raster)
+
+# 设置包含栅格文件的文件夹路径
+folder_path <- "E:/PA_SDM/breed/show/tem"
+
+# 获取文件夹中所有栅格文件的文件名
+file_names <- list.files(path = folder_path, pattern = "\\.tif$", full.names = TRUE)
+
+# 创建一个空向量，用于存储所有栅格图层的平均值
+mean_values <- numeric()
+
+# 循环处理每个文件
+for (file_path in file_names) {
+  # 读取栅格文件
+  raster_layer <- raster(file_path)
+  
+  # 计算栅格图层的平均值
+  mean_value <- mean(raster_layer[], na.rm = TRUE)
+  
+  # 将平均值添加到向量中
+  mean_values <- c(mean_values, mean_value)
+}
+
+# 打印所有栅格图层的平均值
+print(mean_values)
+
+```
+

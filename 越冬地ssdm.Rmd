@@ -15,83 +15,83 @@ library(readr)
 
 #2020 年冬季
 ```{r}
+setwd("G:/BaiduSyncdisk/PA_SDM/8_mask/")
 
-
-Lake2020 <-   raster("E:/PA_SDM/8_mask/2020/dis_42.tif")
+Lake2020 <-   raster("2020/dis_42.tif")
 names(Lake2020) <- "Lake"
-Dam2020 <-    raster("E:/PA_SDM/8_mask/2020/dis_43.tif")
+Dam2020 <-    raster("2020/dis_43.tif")
 names(Dam2020) <- "Dam"
-Tide2020 <-   raster("E:/PA_SDM/8_mask/2020/dis_45.tif")
+Tide2020 <-   raster("2020/dis_45.tif")
 names(Tide2020) <- "Tide"
-Mud2020 <-   raster("E:/PA_SDM/8_mask/2020/dis_46.tif")
+Mud2020 <-   raster("2020/dis_46.tif")
 names(Mud2020) <- "Mud"
-Wet2020 <-   raster("E:/PA_SDM/8_mask/2020/dis_64.tif")
+Wet2020 <-   raster("2020/dis_64.tif")
 names(Wet2020) <- "Wet"
 
-Tem2020 <-  raster("E:/PA_SDM/8_mask/tem/1246_2020W.tif")
+Tem2020 <-  raster("tem/1246_2020W.tif")
 names(Tem2020) <- "Tem"
 
 #环境变量整合
 Env <- stack(Lake2020,Dam2020,Tide2020,Mud2020,Wet2020,Tem2020) 
 
 
-Lake2000 <-   raster("E:/PA_SDM/8_mask/2000/dis_42.tif")
+Lake2000 <-   raster("2000/dis_42.tif")
 names(Lake2000) <- "Lake"
-Dam2000 <-    raster("E:/PA_SDM/8_mask/2000/dis_43.tif")
+Dam2000 <-    raster("2000/dis_43.tif")
 names(Dam2000) <- "Dam"
-Tide2000 <-   raster("E:/PA_SDM/8_mask/2000/dis_45.tif")
+Tide2000 <-   raster("2000/dis_45.tif")
 names(Tide2000) <- "Tide"
-Mud2000 <-   raster("E:/PA_SDM/8_mask/2000/dis_46.tif")
+Mud2000 <-   raster("2000/dis_46.tif")
 names(Mud2000) <- "Mud"
-Wet2000 <-   raster("E:/PA_SDM/8_mask/2000/dis_64.tif")
+Wet2000 <-   raster("2000/dis_64.tif")
 names(Wet2000) <- "Wet"
-Tem2000 <-  raster("E:/PA_SDM/8_mask/tem/1246_2000W.tif")
+Tem2000 <-  raster("tem/1246_2000W.tif")
 names(Tem2000) <- "Tem" 
 
 
 #反推2005
-Lake2005 <-   raster("E:/PA_SDM/8_mask/2005/dis_42.tif")
+Lake2005 <-   raster("2005/dis_42.tif")
 names(Lake2005) <- "Lake"
-Dam2005 <-    raster("E:/PA_SDM/8_mask/2005/dis_43.tif")
+Dam2005 <-    raster("2005/dis_43.tif")
 names(Dam2005) <- "Dam"
-Tide2005 <-   raster("E:/PA_SDM/8_mask/2005/dis_45.tif")
+Tide2005 <-   raster("2005/dis_45.tif")
 names(Tide2005) <- "Tide"
-Mud2005 <-   raster("E:/PA_SDM/8_mask/2005/dis_46.tif")
+Mud2005 <-   raster("2005/dis_46.tif")
 names(Mud2005) <- "Mud"
-Wet2005 <-   raster("E:/PA_SDM/8_mask/2005/dis_64.tif")
+Wet2005 <-   raster("2005/dis_64.tif")
 names(Wet2005) <- "Wet"
-Tem2005 <-  raster("E:/PA_SDM/8_mask/tem/1246_2005W.tif")
+Tem2005 <-  raster("tem/1246_2005W.tif")
 names(Tem2005) <- "Tem" 
 
 
 
 #反推2010
-Lake2010 <-   raster("E:/PA_SDM/8_mask/2010/dis_42.tif")
+Lake2010 <-   raster("2010/dis_42.tif")
 names(Lake2010) <- "Lake"
-Dam2010 <-    raster("E:/PA_SDM/8_mask/2010/dis_43.tif")
+Dam2010 <-    raster("2010/dis_43.tif")
 names(Dam2010) <- "Dam"
-Tide2010 <-   raster("E:/PA_SDM/8_mask/2010/dis_45.tif")
+Tide2010 <-   raster("2010/dis_45.tif")
 names(Tide2010) <- "Tide"
-Mud2010 <-   raster("E:/PA_SDM/8_mask/2010/dis_46.tif")
+Mud2010 <-   raster("2010/dis_46.tif")
 names(Mud2010) <- "Mud"
-Wet2010 <-   raster("E:/PA_SDM/8_mask/2010/dis_64.tif")
+Wet2010 <-   raster("2010/dis_64.tif")
 names(Wet2010) <- "Wet"
-Tem2010 <-  raster("E:/PA_SDM/8_mask/tem/1246_2010W.tif")
+Tem2010 <-  raster("tem/1246_2010W.tif")
 names(Tem2010) <- "Tem" 
 
 
 #反推2015
-Lake2015 <-   raster("E:/PA_SDM/8_mask/2015/dis_42.tif")
+Lake2015 <-   raster("2015/dis_42.tif")
 names(Lake2015) <- "Lake"
-Dam2015 <-    raster("E:/PA_SDM/8_mask/2015/dis_43.tif")
+Dam2015 <-    raster("2015/dis_43.tif")
 names(Dam2015) <- "Dam"
-Tide2015 <-   raster("E:/PA_SDM/8_mask/2015/dis_45.tif")
+Tide2015 <-   raster("2015/dis_45.tif")
 names(Tide2015) <- "Tide"
-Mud2015 <-   raster("E:/PA_SDM/8_mask/2015/dis_46.tif")
+Mud2015 <-   raster("2015/dis_46.tif")
 names(Mud2015) <- "Mud"
-Wet2015 <-   raster("E:/PA_SDM/8_mask/2015/dis_64.tif")
+Wet2015 <-   raster("2015/dis_64.tif")
 names(Wet2015) <- "Wet"
-Tem2015 <-  raster("E:/PA_SDM/8_mask/tem/1246_2015W.tif")
+Tem2015 <-  raster("tem/1246_2015W.tif")
 names(Tem2015) <- "Tem" 
 
 Env2000 <- stack(Tem2000,Lake2000,Tide2000,Dam2000,Mud2000,Wet2000) 
